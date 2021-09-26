@@ -1,0 +1,20 @@
+{
+  "name": "Youtube Auto Adskiper",
+  "description": "Auto click the skip ad button",
+  "version": "0.1",
+  "manifest_version": 3,
+  "author": "Tony Liou",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "http://www.youtube.com/*"
+      ],
+      "js": ["skipper.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "homepage": "https://github.com/Tony-Liou",
+  "permission": ["scripting"]
+}
