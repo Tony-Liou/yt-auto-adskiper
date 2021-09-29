@@ -1,10 +1,7 @@
-(function () {
-  const classNameList = [
-    'ytp-ad-skip-button ytp-button',
-    'ytp-ad-overlay-close-button'
-  ];
+(async function () {
+  const classNameList = ['ytp-ad-skip-button ytp-button', 'ytp-ad-overlay-close-button'];
 
-  function getElements(classNames: Array<string>): Element[] {
+  function getElements(classNames: string[]): Element[] {
     return classNames
       .map(name => Array.from(document.getElementsByClassName(name)) || [])
       .reduce((acc, elems) => acc.concat(elems), []);
@@ -17,26 +14,19 @@
   }
 
   function triggerClick(el: Element) {
-    if (typeof el.dispatchEvent === 'function') {
-      const evt = new MouseEvent('click', {bubbles: true, cancelable: false});
-      el.dispatchEvent(evt);
-    }
-  }
-
-  function triggerClickWhenVisible(button: HTMLElement) {
-    let parentWithDisplayStyle: HTMLElement | null = null;
-    for (let curParent: HTMLElement | null = button; curParent !== null; curParent = curParent.parentElement) {
-      if (curParent.style.display === 'none') {
-        parentWithDisplayStyle = curParent;
-        break;
-      }
-    }
-
-    if (parentWithDisplayStyle === null) {
+    if (typeof el.dispatchEvent !== 'function') {
       return;
     }
+
+    const evt = new MouseEvent('click', {bubbles: true, cancelable: false});
+    el.dispatchEvent(evt);
   }
 
+  /**
+   * Get *ytd-player* element and create a MutationObserver to listen it.
+   *
+   * @return `true` if succeed; otherwise, `false`
+   */
   function initObserver(): boolean {
     const ytdPlayer = document.getElementById('ytd-player');
     if (ytdPlayer === null) {
@@ -49,5 +39,11 @@
     return true;
   }
 
-  initObserver();
+  function sleep(ms: number): Promise<unknown> {
+    return new Promise(r => setTimeout(r, ms));
+  }
+
+  for (let failCount = 0; !initObserver() && failCount < 5; failCount++) {
+    await sleep(1000);
+  }
 })();
