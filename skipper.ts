@@ -1,4 +1,4 @@
-(async function () {
+(async () => {
   const classNameList = ['ytp-ad-skip-button ytp-button', 'ytp-ad-overlay-close-button'];
 
   let observedSkipBtn: Element | undefined;
