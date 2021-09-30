@@ -3,10 +3,11 @@
 
   let observedSkipBtn: Element | undefined;
   let skipBtnObserver: MutationObserver | undefined;
+  let ytdPlayer: HTMLElement | null;
 
   function getElements(classNames: string[]): Element[] {
     return classNames
-      .map(name => Array.from(document.getElementsByClassName(name)))
+      .map(name => Array.from(ytdPlayer!.getElementsByClassName(name)))
       .reduce((acc, elems) => acc.concat(elems), []);
   }
 
@@ -42,7 +43,7 @@
 
   /**
    * Create a new MutationObserver to monitor the button.
-   * If it is visible, it will be clicked.
+   * Once it is visible, it will be clicked.
    *
    * @param button - The element need to be observed
    */
@@ -88,12 +89,12 @@
   }
 
   /**
-   * Get *ytd-player* element and create a MutationObserver to listen it.
+   * Get *ytd-player* element and create a MutationObserver to listen to it.
    *
    * @return `true` if succeed; otherwise, `false`
    */
   function initObserver(): boolean {
-    const ytdPlayer = document.getElementById('ytd-player');
+    ytdPlayer = document.getElementById('ytd-player');
     if (ytdPlayer === null) {
       return false;
     }
@@ -108,9 +109,10 @@
     return new Promise(r => setTimeout(r, ms));
   }
 
-  // entry
-  for (let failCount = 0; failCount < 5; failCount++) {
+  const maxRetryCount = 5;
+  for (let failCount = 0; failCount < maxRetryCount; failCount++) {
     if (initObserver()) {
+      console.debug('MutationObserver initialized successfully.');
       break;
     }
 
